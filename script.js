@@ -5,15 +5,21 @@ const pause = document.getElementById("pause");
 const pomodoro = document.getElementById("pomodoro");
 const shortBreak = document.getElementById("shortBreak");
 const longBreak = document.getElementById("longBreak");
+const endSound = new Audio("timerUpAudio.wav");
+endSound.volume = 0.8;
 
 let seconds = 60;
 let minutes = 24;
 let interval 
 let timerOn = false;
+let timesUp = false;
+
 
 // Set time buttons
 
 pomodoro.addEventListener('click' , (e) =>{
+    timesUp = false;
+    audioHandler()
     stopCounter();
     minutes = 24;
     seconds = 60
@@ -21,13 +27,17 @@ pomodoro.addEventListener('click' , (e) =>{
 });
 
 shortBreak.addEventListener('click' , (e) =>{
+    timesUp = false;
+    audioHandler()
     stopCounter();
     minutes = 4;
-    seconds = 60
+    seconds = 60;
     timer.innerHTML = "5:00";
 });
 
 longBreak.addEventListener('click' , (e) =>{
+    timesUp = false;
+    audioHandler()
     stopCounter();
     minutes = 9;
     seconds = 60
@@ -47,10 +57,12 @@ function countDown(){
     // If timer buttons clcik return the counter
      
     if (seconds === 0 && minutes === 0) { 
+        timesUp = true
+        audioHandler();
         stopCounter();
         return
     } 
-
+    
     seconds = seconds - 1; // Decrement seconds
 
     if (seconds < 0){
@@ -82,6 +94,11 @@ function stopCounter (){
     interval = null;
 }
 
-function reset () {
-    
+function audioHandler(){  
+    if (timesUp === true){
+        endSound.play();
+    } else if (timesUp === false){
+        endSound.pause();
+        endSound.currentTime = 0;
+    }
 }
